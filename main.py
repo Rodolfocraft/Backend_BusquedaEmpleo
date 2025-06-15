@@ -35,6 +35,10 @@ def login(usuario: str, contraseña: str, db: Session = Depends(get_db)):
 def crear_usuario(usuario: schemas.UsuarioCreate, db: Session = Depends(get_db)):
     return users_crud.crear_usuario(db=db, usuario=usuario)
 
+@app.get("/usuarios")
+def listar_usuarios(db: Session = Depends(get_db)):
+    return users_crud.obtener_usuarios(db)
+
 @app.get("/usuarios/{usuario_id}", response_model=schemas.UsuarioOut)
 def obtener_usuario(usuario_id: int, db: Session = Depends(get_db)):
     return users_crud.obtener_usuario(db=db, usuario_id=usuario_id)
@@ -52,6 +56,10 @@ def eliminar_usuario(usuario_id: int, db: Session = Depends(get_db)):
 def crear_vacante(vacante: schemas.VacanteCreate, db: Session = Depends(get_db)):
     return jobs_crud.crear_vacante(db=db, vacante=vacante)
 
+@app.get("/vacantes")
+def listar_vacantes(db: Session = Depends(get_db)):
+    return jobs_crud.obtener_vacantes(db)
+
 @app.get("/vacantes/{vacante_id}", response_model=schemas.VacanteOut)
 def obtener_vacante(vacante_id: int, db: Session = Depends(get_db)):
     return jobs_crud.obtener_vacante(db=db, vacante_id=vacante_id)
@@ -65,6 +73,13 @@ def eliminar_vacante(vacante_id: int, db: Session = Depends(get_db)):
     return jobs_crud.eliminar_vacante(db=db, vacante_id=vacante_id)
 
 # Rutas para postulaciones
+
+@app.get("/postulaciones")
+def listar_postulaciones(db: Session = Depends(get_db)):
+    return applications_crud.obtener_postulaciones(db)
+
+
+
 @app.post("/postulaciones/", response_model=schemas.PostulacionCreate)
 def crear_postulacion(postulacion: schemas.PostulacionCreate, db: Session = Depends(get_db)):
     return applications_crud.crear_postulacion(db=db, postulacion=postulacion)
@@ -78,6 +93,11 @@ def eliminar_postulacion(postulacion_id: int, db: Session = Depends(get_db)):
     return applications_crud.eliminar_postulacion(db=db, postulacion_id=postulacion_id)
 
 # Rutas para hojas de vida
+
+@app.get("/hojas-de-vida")
+def listar_hojas_de_vida(db: Session = Depends(get_db)):
+    return resumes_crud.obtener_hojas_de_vida(db)
+
 @app.post("/hojas_de_vida/", response_model=schemas.HojaDeVidaCreate)
 def crear_hoja_de_vida(hoja_de_vida: schemas.HojaDeVidaCreate, db: Session = Depends(get_db)):
     return resumes_crud.crear_hoja_de_vida(db=db, hoja_de_vida=hoja_de_vida)
@@ -86,6 +106,6 @@ def crear_hoja_de_vida(hoja_de_vida: schemas.HojaDeVidaCreate, db: Session = Dep
 def actualizar_hoja_de_vida(usuario_id: int, hoja_de_vida: schemas.HojaDeVidaCreate, db: Session = Depends(get_db)):
     return resumes_crud.actualizar_hoja_de_vida(db=db, usuario_id=usuario_id, hoja_de_vida=hoja_de_vida)
 
-@app.delete("/hojas_de_vida/{usuario_id}", response_model=schemas.HojaDeVidaCreate)
-def eliminar_hoja_de_vida(usuario_id: int, db: Session = Depends(get_db)):
-    return resumes_crud.eliminar_hoja_de_vida(db=db, usuario_id=usuario_id)
+@app.delete("/hojas_de_vida/{hoja_id}", response_model=schemas.HojaDeVidaCreate)
+def eliminar_hoja_de_vida(hoja_id: int, db: Session = Depends(get_db)):
+    return resumes_crud.eliminar_hoja_de_vida(db=db, hoja_id=hoja_id)

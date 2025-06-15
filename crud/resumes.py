@@ -34,8 +34,8 @@ def actualizar_hoja_de_vida(db: Session, usuario_id: int, hoja_de_vida: schemas.
     return db_hoja
 
 # Eliminar una hoja de vida por ID
-def eliminar_hoja_de_vida(db: Session, usuario_id: int):
-    db_hoja = db.query(models.HojaDeVida).filter(models.HojaDeVida.ID_Usuario == usuario_id).first()
+def eliminar_hoja_de_vida(db: Session, hoja_id: int):
+    db_hoja = db.query(models.HojaDeVida).filter(models.HojaDeVida.ID_Hojadevida == hoja_id).first()
     if not db_hoja:
         raise HTTPException(status_code=404, detail="Hoja de vida no encontrada")
     db.delete(db_hoja)
