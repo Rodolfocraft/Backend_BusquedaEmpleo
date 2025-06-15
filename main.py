@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Depends
+from fastapi import FastAPI, Depends, HTTPException
 from sqlalchemy.orm import Session
 import crud.users as users_crud, crud.jobs as jobs_crud, crud.applications as applications_crud, crud.resumes as resumes_crud
 import schemas
@@ -21,6 +21,16 @@ def read_root():
     return {"message": "API está funcionando correctamente"}
 
 # Rutas para usuarios
+
+# Login
+@app.post("/login")
+def login(usuario: str, contraseña: str, db: Session = Depends(get_db)):
+    user = users_crud.login_usuario(db=db, usuario=usuario, contraseña=contraseña)
+    if not user:
+      return None
+    return {"ID_Usuario": user.ID_Usuario}
+
+
 @app.post("/usuarios/", response_model=schemas.UsuarioOut)
 def crear_usuario(usuario: schemas.UsuarioCreate, db: Session = Depends(get_db)):
     return users_crud.crear_usuario(db=db, usuario=usuario)
