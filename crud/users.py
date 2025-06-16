@@ -2,6 +2,17 @@ from sqlalchemy.orm import Session
 from fastapi import HTTPException
 import models, schemas
 
+
+
+#Login
+# Validar usuario y contraseña
+def login_usuario(db: Session, usuario: str, contraseña: str):
+    return db.query(models.Usuario).filter(
+        models.Usuario.Usuario == usuario,
+        models.Usuario.Contraseña == contraseña
+    ).first()
+
+
 # Crear un usuario
 def crear_usuario(db: Session, usuario: schemas.UsuarioCreate):
     db_usuario = models.Usuario(**usuario.dict())
@@ -9,6 +20,9 @@ def crear_usuario(db: Session, usuario: schemas.UsuarioCreate):
     db.commit()
     db.refresh(db_usuario)
     return db_usuario
+
+#Obtener todos los usuarios
+
 
 # Obtener un usuario por ID
 def obtener_usuario(db: Session, usuario_id: int):

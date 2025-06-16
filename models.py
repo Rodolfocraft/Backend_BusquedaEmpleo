@@ -10,7 +10,7 @@ class Usuario(Base):
     Contraseña = Column(String(100))
     Nombre = Column(String(150))
     Correo = Column(String(50))
-    Telefono = Column(Integer)
+    Telefono = Column(String(20))
 
     postulaciones = relationship("Postulacion", back_populates="usuario")
     # Relación con la tabla HojasDeVida
