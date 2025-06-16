@@ -1,5 +1,4 @@
 from fastapi import FastAPI, Depends, HTTPException
-from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 import crud.users as users_crud, crud.jobs as jobs_crud, crud.applications as applications_crud, crud.resumes as resumes_crud
 import schemas
@@ -10,14 +9,7 @@ models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
-# Configuración de CORS
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],  # Puedes cambiar "*" por dominios específicos si quieres más seguridad
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+
 
 # Dependencia para obtener DB
 def get_db():
@@ -26,19 +18,20 @@ def get_db():
         yield db
     finally:
         db.close()
-
 @app.get("/")
 def read_root():
     return {"message": "API está funcionando correctamente"}
 
 # Rutas para usuarios
 
+# Login
 @app.post("/login")
 def login(usuario: str, contraseña: str, db: Session = Depends(get_db)):
     user = users_crud.login_usuario(db=db, usuario=usuario, contraseña=contraseña)
     if not user:
-        return None
+      return None
     return {"ID_Usuario": user.ID_Usuario}
+
 
 @app.post("/usuarios/", response_model=schemas.UsuarioOut)
 def crear_usuario(usuario: schemas.UsuarioCreate, db: Session = Depends(get_db)):
@@ -61,7 +54,6 @@ def eliminar_usuario(usuario_id: int, db: Session = Depends(get_db)):
     return users_crud.eliminar_usuario(db=db, usuario_id=usuario_id)
 
 # Rutas para vacantes
-
 @app.post("/vacantes/", response_model=schemas.VacanteOut)
 def crear_vacante(vacante: schemas.VacanteCreate, db: Session = Depends(get_db)):
     return jobs_crud.crear_vacante(db=db, vacante=vacante)
@@ -87,6 +79,8 @@ def eliminar_vacante(vacante_id: int, db: Session = Depends(get_db)):
 @app.get("/postulaciones")
 def listar_postulaciones(db: Session = Depends(get_db)):
     return applications_crud.obtener_postulaciones(db)
+
+
 
 @app.post("/postulaciones/", response_model=schemas.PostulacionCreate)
 def crear_postulacion(postulacion: schemas.PostulacionCreate, db: Session = Depends(get_db)):
