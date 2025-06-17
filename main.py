@@ -14,11 +14,24 @@ app = FastAPI()
 # Configuración de CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://127.0.0.1:5500"],  # O usa "*" para permitir todos los orígenes, pero es más seguro limitar a tu dominio
+    allow_origins=["http://127.0.0.1:5500"],  # Cambia esto a la URL de tu frontend o "*" para permitir todos los orígenes
     allow_credentials=True,
     allow_methods=["*"],  # Permite todos los métodos HTTP (GET, POST, PUT, DELETE, etc.)
     allow_headers=["*"],  # Permite todos los encabezados
 )
+
+# Manejo de solicitudes OPTIONS (Preflight)
+@app.options("/{any_path:path}")
+async def handle_options():
+    return JSONResponse(
+        status_code=200,
+        content={},
+        headers={
+            "Access-Control-Allow-Origin": "*",  # O pon la URL de tu frontend si prefieres restringirlo
+            "Access-Control-Allow-Methods": "GET, POST, OPTIONS, PUT, DELETE",
+            "Access-Control-Allow-Headers": "Content-Type, Authorization",
+        }
+    )
 
 # Dependencia para obtener DB
 def get_db():
