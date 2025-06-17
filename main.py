@@ -18,7 +18,7 @@ app = FastAPI()
 # Configuración de CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Puedes restringir a dominios específicos si lo prefieres, e.g., ["https://tudominio.com"]
+    allow_origins=["http://localhost:3000"],  # Puedes restringir a dominios específicos si lo prefieres, e.g., ["https://tudominio.com"]
     allow_credentials=True,
     allow_methods=["*"],  # Permitir todos los métodos HTTP (GET, POST, PUT, DELETE, etc.)
     allow_headers=["*"],  # Permitir todos los encabezados
