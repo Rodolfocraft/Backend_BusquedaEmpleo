@@ -4,10 +4,21 @@ import crud.users as users_crud, crud.jobs as jobs_crud, crud.applications as ap
 import schemas
 from database import SessionLocal, engine
 import models
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 
 models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
+
+# Configuración de CORS
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5500"],  # O usa "*" para permitir todos los orígenes, pero es más seguro limitar a tu dominio
+    allow_credentials=True,
+    allow_methods=["*"],  # Permite todos los métodos HTTP (GET, POST, PUT, DELETE, etc.)
+    allow_headers=["*"],  # Permite todos los encabezados
+)
 
 # Dependencia para obtener DB
 def get_db():
@@ -16,6 +27,7 @@ def get_db():
         yield db
     finally:
         db.close()
+
 @app.get("/")
 def read_root():
     return {"message": "API está funcionando correctamente"}
@@ -27,7 +39,7 @@ def read_root():
 def login(usuario: str, contraseña: str, db: Session = Depends(get_db)):
     user = users_crud.login_usuario(db=db, usuario=usuario, contraseña=contraseña)
     if not user:
-      return None
+        return None
     return {"ID_Usuario": user.ID_Usuario}
 
 
@@ -77,8 +89,6 @@ def eliminar_vacante(vacante_id: int, db: Session = Depends(get_db)):
 @app.get("/postulaciones")
 def listar_postulaciones(db: Session = Depends(get_db)):
     return applications_crud.obtener_postulaciones(db)
-
-
 
 @app.post("/postulaciones/", response_model=schemas.PostulacionCreate)
 def crear_postulacion(postulacion: schemas.PostulacionCreate, db: Session = Depends(get_db)):
