@@ -4,12 +4,25 @@ import crud.users as users_crud, crud.jobs as jobs_crud, crud.applications as ap
 import schemas
 from database import SessionLocal, engine
 import models
+from fastapi.middleware.cors import CORSMiddleware
 
 models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
 
+
+
+
+
+# Configuración de CORS
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Puedes restringir a dominios específicos si lo prefieres, e.g., ["https://tudominio.com"]
+    allow_credentials=True,
+    allow_methods=["*"],  # Permitir todos los métodos HTTP (GET, POST, PUT, DELETE, etc.)
+    allow_headers=["*"],  # Permitir todos los encabezados
+)
 
 # Dependencia para obtener DB
 def get_db():
