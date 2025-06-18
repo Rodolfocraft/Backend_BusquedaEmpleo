@@ -1,18 +1,13 @@
-# Usa una imagen oficial de Python como base
-FROM python:3.11-slim
+# Imagen base ligera de Python
+FROM public.ecr.aws/lambda/python:3.11
 
-# Establece el directorio de trabajo dentro del contenedor
-WORKDIR /app
-
-# Copia los archivos del proyecto al contenedor
+# Copia archivos al contenedor
 COPY . .
 
 # Instala dependencias
-RUN pip install --upgrade pip \
-    && pip install -r requirements.txt
+RUN pip install --upgrade pip && \
+    pip install -r requirements.txt
 
-# Expone el puerto por defecto de FastAPI/Uvicorn
-EXPOSE 8080
+# Establece el handler de Lambda
+CMD ["main.handler"]
 
-# Comando para iniciar la aplicación
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8080"]
