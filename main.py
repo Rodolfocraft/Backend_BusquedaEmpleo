@@ -6,6 +6,7 @@ from database import SessionLocal, engine
 import models
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+from mangum import Mangum
 
 models.Base.metadata.create_all(bind=engine)
 
@@ -132,3 +133,5 @@ def actualizar_hoja_de_vida(usuario_id: int, hoja_de_vida: schemas.HojaDeVidaCre
 @app.delete("/hojas_de_vida/{hoja_id}", response_model=schemas.HojaDeVidaCreate)
 def eliminar_hoja_de_vida(hoja_id: int, db: Session = Depends(get_db)):
     return resumes_crud.eliminar_hoja_de_vida(db=db, hoja_id=hoja_id)
+
+handler = Mangum(app)
